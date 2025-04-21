@@ -41,7 +41,7 @@ namespace AudioConvert
             SelectAudioDialog.ShowDialog();
 
             //Validacion de tipos de archivos aceptados
-            if (Regex.IsMatch(SelectAudioDialog.FileName, @"\.mp3$", RegexOptions.IgnoreCase))
+            if (!Regex.IsMatch(SelectAudioDialog.FileName, @"\.mp3$", RegexOptions.IgnoreCase))
             {
                 MessageBox.Show("Solo se aceptan archivos .mp3", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -82,7 +82,8 @@ namespace AudioConvert
         /// </summary>
         private void HideLoading()
         {
-            if (loading is not null) loading.Hide();
+            //Verificamos que el loader no sea nulo y que este creado en un hilo secundario del procesador
+            if (loading is not null && loading.IsHandleCreated) loading.Invoke(loading.Close);
         }
 
         /// <summary>
@@ -90,8 +91,27 @@ namespace AudioConvert
         /// </summary>
         private void ShowLoading()
         {
-            loading = new Loader();
-            loading.ShowDialog(this);
+            //Debemos ejecutar el formulario de loading en un hilo secundario del procesador para poder cerrarlo ya que sino lo hacemos asi, se quedaria esperando a que el usuario ejecute una accion para poder cerrarse
+
+            // debemos capturar la instancia actual para poder pasarsela al formulario de loading
+            var owner = this;
+
+            // abrimos nuestro loader en un nuevo hilo
+            var showLoading = new Thread(() =>
+            {
+                loading = new Loader();
+
+                // invocamos mediante un delegado al metodo para mostrar el loader y pasamos la instancia de su elemento padre
+                owner.Invoke(new Action(() =>
+                {
+                    loading.ShowDialog(owner);
+                }));
+            });
+
+            showLoading.SetApartmentState(ApartmentState.STA);
+
+            //Iniciamos el hilo
+            showLoading.Start();
         }
     }
 }
