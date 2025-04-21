@@ -35,22 +35,28 @@
             // pictureBox1
             // 
             pictureBox1.Image = Properties.Resources.loading;
-            pictureBox1.Location = new Point(121, 102);
+            pictureBox1.Location = new Point(173, 170);
+            pictureBox1.Margin = new Padding(4, 5, 4, 5);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(245, 218);
+            pictureBox1.Size = new Size(350, 363);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
             // Loader
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(513, 450);
+            BackColor = SystemColors.Control;
+            ClientSize = new Size(699, 740);
             Controls.Add(pictureBox1);
             FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(4, 5, 4, 5);
             Name = "Loader";
             Opacity = 0.6D;
+            ShowIcon = false;
+            ShowInTaskbar = false;
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Loader";
             Load += Loader_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
